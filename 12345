@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>木蘇里全作品人物故事問答（不重複挑戰）</title>
+  <style>
+    :root {
+      --bg-page: #f7f3eb;
+      --bg-card: #fffdf9;
+      --ink-main: #24292f;
+      --ink-sub: #57606a;
+      --accent: #a15c27;
+      --accent-dark: #7c4216;
+      --accent-soft: #f5ebe0;
+      --border: #e5dccb;
+      --correct-bg: #dcfce7;
+      --correct-border: #16a34a;
+      --correct-text: #14532d;
+      --wrong-bg: #fee2e2;
+      --wrong-border: #dc2626;
+      --wrong-text: #7f1d1d;
+      --shadow: 0 12px 32px rgba(68, 48, 28, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", sans-serif;
+      background-color: var(--bg-page);
+      background-image: radial-gradient(#dfd4c0 1px, transparent 1px);
+      background-size: 22px 22px;
+      color: var(--ink-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px 40px;
+      line-height: 1.6;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+    }
+
+    /* 頂部標題與題庫進度 */
+    header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .badge-author {
+      display: inline-block;
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      border: 1px solid #decbb3;
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+      letter-spacing: 0.06em;
+    }
+
+    h1 {
+      font-size: 1.65rem;
+      font-weight: 800;
+      color: var(--ink-main);
+      letter-spacing: 0.03em;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--ink-sub);
+      margin-top: 4px;
+    }
+
+    /* 全題庫不重複狀態條 */
+    .pool-status-bar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 16px;
+      margin-bottom: 18px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(68, 48, 28, 0.04);
+    }
+
+    .pool-info {
+      font-size: 0.88rem;
+      color: var(--ink-sub);
+    }
+
+    .pool-info strong {
+      color: var(--accent-dark);
+      font-weight: 800;
+    }
+
+    .reset-pool-btn {
+      background: transparent;
+      border: 1px solid #d4c4ac;
+      color: var(--ink-sub);
+      font-size: 0.8rem;
+      padding: 5px 11px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .reset-pool-btn:hover {
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      border-color: var(--accent);
+    }
+
+    /* 主卡片 */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px 24px;
+      box-shadow: var(--shadow);
+    }
+
+    /* 開始畫面 */
+    .start-screen {
+      text-align: center;
+    }
+
+    .novel-tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 6px;
+      margin: 18px 0 24px;
+    }
+
+    .novel-tag {
+      font-size: 0.78rem;
+      background: #f5efe6;
+      color: #6b4c35;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: 1px solid #e7dccb;
+    }
+
+    .mode-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+
+    @media (max-width: 520px) {
+      .mode-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .primary-btn, .secondary-btn {
+      width: 100%;
+      padding: 14px 18px;
+      border-radius: 12px;
+      font-size: 0.98rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.18s ease;
+      border: none;
+    }
+
+    .primary-btn {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 6px 16px rgba(161, 92, 39, 0.25);
+    }
+
+    .primary-btn:hover {
+      background: var(--accent-dark);
+      transform: translateY(-1px);
+    }
+
+    .secondary-btn {
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      border: 1.5px solid #dec7ab;
+    }
+
+    .secondary-btn:hover {
+      background: #ebd9c3;
+    }
+
+    /* 答題畫面 */
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      font-size: 0.88rem;
+      color: var(--ink-sub);
+    }
+
+    .book-pill {
+      background: var(--accent-soft);
+      color: var(--accent-dark);
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 7px;
+      background: #ede5d8;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    .question-text {
+      font-size: 1.18rem;
+      font-weight: 700;
+      color: var(--ink-main);
+      margin-bottom: 20px;
+      line-height: 1.55;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+    }
+
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 13px 16px;
+      font-size: 0.98rem;
+      color: var(--ink-main);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.15s ease;
+    }
+
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--accent);
+      background: #fdf8f2;
+    }
+
+    .option-btn:disabled {
+      cursor: default;
+    }
+
+    .option-prefix {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #f3ece1;
+      color: var(--accent-dark);
+      font-weight: 800;
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .option-btn.correct {
+      background: var(--correct-bg);
+      border-color: var(--correct-border);
+      color: var(--correct-text);
+      font-weight: 700;
+    }
+
+    .option-btn.correct .option-prefix {
+      background: var(--correct-border);
+      color: #fff;
+    }
+
+    .option-btn.wrong {
+      background: var(--wrong-bg);
+      border-color: var(--wrong-border);
+      color: var(--wrong-text);
+    }
+
+    .option-btn.wrong .option-prefix {
+      background: var(--wrong-border);
+      color: #fff;
+    }
+
+    /* 解析區 */
+    .explanation-box {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      background: #f8f4ec;
+      border-left: 4px solid var(--accent);
+      font-size: 0.92rem;
+      color: #3f3830;
+      display: none;
+    }
+
+    .explanation-box.visible {
+      display: block;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .next-btn-wrap {
+      margin-top: 20px;
+      display: none;
+    }
+
+    .next-btn-wrap.visible {
+      display: block;
+    }
+
+    /* 結算畫面 */
+    .result-screen {
+      text-align: center;
+    }
+
+    .score-circle {
+      width: 124px;
+      height: 124px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      border: 4px solid var(--accent);
+      margin: 12px auto 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .score-num {
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--accent-dark);
+      line-height: 1.1;
+    }
+
+    .score-total {
+      font-size: 0.82rem;
+      color: var(--ink-sub);
+    }
+
+    .rank-title {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: var(--accent-dark);
+      margin-bottom: 6px;
+    }
+
+    .review-list {
+      text-align: left;
+      margin: 22px 0;
+      border-top: 1px solid var(--border);
+      padding-top: 16px;
+      max-height: 320px;
+      overflow-y: auto;
+    }
+
+    .review-item {
+      padding: 10px 12px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      font-size: 0.88rem;
+      background: #faf6ef;
+      border: 1px solid #ebe2d3;
+    }
+
+    .review-item.is-wrong {
+      border-left: 4px solid var(--wrong-border);
+    }
+
+    .review-item.is-right {
+      border-left: 4px solid var(--correct-border);
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <span class="badge-author">晉江專欄：人間雜事</span>
+      <h1>📚 木蘇里全作品人物故事問答</h1>
+      <p class="subtitle">內建題庫記憶機制，已答過的題目在全題庫通關前絕不重複</p>
+    </header>
+
+    <!-- 全題庫不重複進度列 -->
+    <div class="pool-status-bar">
+      <div class="pool-info" id="poolInfo">
+        全題庫不重複進度：已解鎖 <strong>0 / 32</strong> 題（剩餘 <strong>32</strong> 題未作答）
+      </div>
+      <button type="button" class="reset-pool-btn" id="resetPoolBtn">🔄 重置全題庫進度</button>
+    </div>
+
+    <!-- 1. 開始畫面 -->
+    <section class="card start-screen" id="startScreen">
+      <h2 style="font-size: 1.2rem; margin-bottom: 6px;">收錄木蘇里全系列 15 部作品</h2>
+      <p style="font-size: 0.9rem; color: var(--ink-sub);">每局隨機抽取未曾作答的題目，選項順序亦隨機排列</p>
+
+      <div class="novel-tags">
+        <span class="novel-tag">《全球高考》</span>
+        <span class="novel-tag">《某某》</span>
+        <span class="novel-tag">《判官》</span>
+        <span class="novel-tag">《銅錢龕世》</span>
+        <span class="novel-tag">《一級律師》</span>
+        <span class="novel-tag">《不見上仙三百年》</span>
+        <span class="novel-tag">《黑天》</span>
+        <span class="novel-tag">《文物不好惹》</span>
+        <span class="novel-tag">《陰客》</span>
+        <span class="novel-tag">《大帝的挑刺日常》</span>
+        <span class="novel-tag">《深海流竄日記》</span>
+        <span class="novel-tag">《逆徒》</span>
+        <span class="novel-tag">《飼鬼》</span>
+        <span class="novel-tag">《末世之凶獸》</span>
+        <span class="novel-tag">《逃離玫瑰島》</span>
+      </div>
+
+      <div class="mode-grid">
+        <button type="button" class="primary-btn" id="start10Btn">🎲 隨機 10 題（不重複）</button>
+        <button type="button" class="secondary-btn" id="startAllBtn">🏆 挑戰剩餘全部題目</button>
+      </div>
+    </section>
+
+    <!-- 2. 答題畫面 -->
+    <section class="card hidden" id="quizScreen">
+      <div class="quiz-header">
+        <span class="book-pill" id="bookTag">《作品名》</span>
+        <span>第 <strong id="qCurrent">1</strong> / <span id="qTotal">10</span> 題 ｜ 得分：<strong id="liveScore">0</strong></span>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <div class="question-text" id="questionText">題目載入中...</div>
+
+      <div class="options-list" id="optionsList"></div>
+
+      <div class="explanation-box" id="explanationBox"></div>
+
+      <div class="next-btn-wrap" id="nextBtnWrap">
+        <button type="button" class="primary-btn" id="nextBtn">下一題 ➔</button>
+      </div>
+    </section>
+
+    <!-- 3. 結算畫面 -->
+    <section class="card result-screen hidden" id="resultScreen">
+      <div class="score-circle">
+        <div class="score-num" id="finalScore">0</div>
+        <div class="score-total" id="finalTotal">滿分 10 題</div>
+      </div>
+
+      <div class="rank-title" id="rankTitle">人間雜事新晉讀者</div>
+      <p style="font-size: 0.9rem; color: var(--ink-sub);" id="resultDesc">本局所有題目已加入「已作答紀錄」，下一局將繼續抽出全新題目！</p>
+
+      <div class="review-list" id="reviewList"></div>
+
+      <div class="mode-grid">
+        <button type="button" class="primary-btn" id="playNextRoundBtn">✨ 繼續下一局（抽新題）</button>
+        <button type="button" class="secondary-btn" id="backHomeBtn">🏠 返回主畫面</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // 木蘇里全部 15 部小說精選 32 題（不重複題庫）
+    const QUESTION_BANK = [
+      // 《全球高考》
+      {
+        id: "qqgk_1",
+        book: "《全球高考》",
+        q: "在《全球高考》中，主角游惑在系統中的考官編號是多少？",
+        options: ["001", "007", "A01", "922"],
+        answer: 0,
+        exp: "游惑曾是系統最頂尖的考官，編號 001；而秦究則是同樣赫赫有名的大考官「考官 A」。"
+      },
+      {
+        id: "qqgk_2",
+        book: "《全球高考》",
+        q: "《全球高考》中，游惑與秦究在考場裡屢次違規，常被系統關進哪裡寫檢討？",
+        options: ["禁閉室", "無盡長廊", "主控室", "零號考場"],
+        answer: 0,
+        exp: "兩人因聯手炸考場、卡系統 Bug，成為「禁閉室」的常客，甚至在禁閉室牆上留下無數刻字。"
+      },
+      {
+        id: "qqgk_3",
+        book: "《全球高考》",
+        q: "「兩千三百一十二天，他們在這裡重逢。」這句話在《全球高考》中指的是哪兩位主角？",
+        options: ["游惑與秦究", "聞時與謝問", "燕綏之與顧晏", "盛望與江添"],
+        answer: 0,
+        exp: "經歷多次記憶清除與輪迴考場後，游惑與秦究
